@@ -145,62 +145,66 @@ mjx-container[display="true"] + br {
 <div class="post-item">
     <div class="post-header">
         <span class="ui-tips post-index">1.</span>
-        <h2><a href="/2024/09/17/binet%20cauchy/">#</a></h2>
+        <h2><a href="/2024/09/17/red%20black%20tree/">red black tree</a></h2>
         <span class="post-date">2024-09-17</span>
     </div>
     <div class="post-content">
-        
-title:Binet-Cauchymathjax:trueBinet-Cauchy0x00前置Laplace expansion将常见的行列式行展开拓展一下，同时展开多行的Laplace展开为：
-
-其含义为，取定第行， 等于这  行形成的所有  阶子式与它自己的代数余子式的乘积之和. 
-其中，表示矩阵保留第行，第列的子式
-表示矩阵去除第行，第列的子...
+        red black treeinsert-fixup总共3种情况
+我们讨论待删除结点,的父亲,的祖父和的另一儿子(的叔节点)
+如果在若干次操作后的颜色为黑色，则已经调整完毕，可以退出
+否则判断3种情况：
+case 1为红色
+图中是.
+那么,都为红色，为黑色。
+将三者反色，此时红色转移到了上，需要继续递归判断
+case 2黑色且与异侧(指一个是左孩子，另...
     </div>
 </div>
 
 <div class="post-item">
     <div class="post-header">
         <span class="ui-tips post-index">2.</span>
-        <h2><a href="/2024/09/17/skew%20heap/">#</a></h2>
+        <h2><a href="/2024/09/17/binet%20cauchy/">Binet-Cauchy</a></h2>
         <span class="post-date">2024-09-17</span>
     </div>
     <div class="post-content">
-        
-title:skew heapmathjax:trueskew heap复杂度证明势能分析
-设表示个节点的树中，重节点的个数
-重节点为右子树大小大于左子树的节点，轻节点相反
-假设合并的两个树,右路径的重节点，轻节点个数为
-那么每次操作实际开销为
-因为每次走右路径，最多只会经过这些节点
-则均摊开销
-因为每个节点都会交换左右子树，且重节点的合并发生在右子...
+        Binet-Cauchy0x00前置Laplace expansion将常见的行列式行展开拓展一下，同时展开多行的Laplace展开为：
+
+其含义为，取定第行， 等于这  行形成的所有  阶子式与它自己的代数余子式的乘积之和. 
+其中, 表示矩阵保留第行，第列的子式
+表示矩阵去除第行，第列的子式
+证明略了，可以上网自学/感性理解一下
+0x01描述
+0x...
     </div>
 </div>
 
 <div class="post-item">
     <div class="post-header">
         <span class="ui-tips post-index">3.</span>
-        <h2><a href="/2024/09/17/summary/">summary</a></h2>
+        <h2><a href="/2024/09/17/skew%20heap/">skew heap</a></h2>
         <span class="post-date">2024-09-17</span>
     </div>
     <div class="post-content">
-        Hierholzer定义Matrix-treeLGVBinet-Cauchy0x00前置Laplace expansion将常见的行列式行展开拓展一下，同时展开多行的Laplace展开为：
-
-其含义为，取定第行， 等于这  行形成的所有  阶子式与它自己的代数余子式的乘积之和. 
-其中, 表示矩阵保留第行，第列的子式
-表示矩阵去除第行，第列的子式
-证明...
+        skew heap复杂度证明势能分析
+设表示个节点的树中，重节点的个数
+重节点为右子树大小大于左子树的节点，轻节点相反
+假设合并的两个树,右路径的重节点，轻节点个数为
+那么每次操作实际开销为
+因为每次走右路径，最多只会经过这些节点
+则均摊开销
+因为每个节点都会交换左右子树，且重节点的合并发生在右子树，所以重节点一定变为轻节点(轻节点不一定变成重节点)。...
     </div>
 </div>
 
 <div class="post-item">
     <div class="post-header">
         <span class="ui-tips post-index">4.</span>
-        <h2><a href="/2024/09/17/hello-world/">Hello World</a></h2>
+        <h2><a href="/2024/09/17/summary/">summary</a></h2>
         <span class="post-date">2024-09-17</span>
     </div>
     <div class="post-content">
-        Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ...
+        HierholzerMatrix-treeLGVBinet-Cauchyskew heapred black treemartingale and stopping times
     </div>
 </div>
 
