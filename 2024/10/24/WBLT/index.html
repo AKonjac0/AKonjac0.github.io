@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Weight Balanced Leafy Tree简介重量平衡，并且数值只存在叶子上 与替罪羊树类似有一个平衡常数  定义一个节点平衡指数是左子树重量除以整颗子树的重量 如果平衡指数小于 ，说明不平衡，要调整 这里调整指的是“旋转”， 而不是重构子树 说是旋转，其实是切割并拼接 一次旋转如果要向左转，就将左儿子和右儿子的左儿子合并成新的左儿子，右儿子的右儿子作为新的右儿子，原本的右儿子直接丢弃">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WBLT">
+<meta property="og:url" content="http://akonjac0.github.io/2024/10/24/WBLT/index.html">
+<meta property="og:site_name" content="My blog">
+<meta property="og:description" content="Weight Balanced Leafy Tree简介重量平衡，并且数值只存在叶子上 与替罪羊树类似有一个平衡常数  定义一个节点平衡指数是左子树重量除以整颗子树的重量 如果平衡指数小于 ，说明不平衡，要调整 这里调整指的是“旋转”， 而不是重构子树 说是旋转，其实是切割并拼接 一次旋转如果要向左转，就将左儿子和右儿子的左儿子合并成新的左儿子，右儿子的右儿子作为新的右儿子，原本的右儿子直接丢弃">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-10-24T11:02:50.740Z">
+<meta property="article:modified_time" content="2024-10-24T11:19:11.780Z">
+<meta property="article:author" content="AKonjac_">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>WBLT</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/AKonjac0/AKonjac0.github.io">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2024/10/23/closest%20pairs/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://akonjac0.github.io/2024/10/24/WBLT/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://akonjac0.github.io/2024/10/24/WBLT/&text=WBLT"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://akonjac0.github.io/2024/10/24/WBLT/&title=WBLT"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://akonjac0.github.io/2024/10/24/WBLT/&is_video=false&description=WBLT"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=WBLT&body=Check out this article: http://akonjac0.github.io/2024/10/24/WBLT/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://akonjac0.github.io/2024/10/24/WBLT/&title=WBLT"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://akonjac0.github.io/2024/10/24/WBLT/&title=WBLT"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://akonjac0.github.io/2024/10/24/WBLT/&title=WBLT"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://akonjac0.github.io/2024/10/24/WBLT/&title=WBLT"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://akonjac0.github.io/2024/10/24/WBLT/&name=WBLT&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://akonjac0.github.io/2024/10/24/WBLT/&t=WBLT"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Weight-Balanced-Leafy-Tree"><span class="toc-number">1.</span> <span class="toc-text">Weight Balanced Leafy Tree</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%89%E5%85%B3%E5%90%88%E5%B9%B6%E4%B8%8E%E5%88%86%E8%A3%82"><span class="toc-number">1.2.</span> <span class="toc-text">有关合并与分裂</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        WBLT
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">AKonjac_</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-10-24T11:02:50.740Z" class="dt-published" itemprop="datePublished">2024-10-24</time>
+        
+        (Updated: <time datetime="2024-10-24T11:19:11.780Z" class="dt-updated" itemprop="dateModified">2024-10-24</time>)
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="Weight-Balanced-Leafy-Tree"><a href="#Weight-Balanced-Leafy-Tree" class="headerlink" title="Weight Balanced Leafy Tree"></a>Weight Balanced Leafy Tree</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>重量平衡，并且数值只存在叶子上</p>
+<p>与替罪羊树类似有一个平衡常数 <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.448ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 640 453"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D6FC" d="M34 156Q34 270 120 356T309 442Q379 442 421 402T478 304Q484 275 485 237V208Q534 282 560 374Q564 388 566 390T582 393Q603 393 603 385Q603 376 594 346T558 261T497 161L486 147L487 123Q489 67 495 47T514 26Q528 28 540 37T557 60Q559 67 562 68T577 70Q597 70 597 62Q597 56 591 43Q579 19 556 5T512 -10H505Q438 -10 414 62L411 69L400 61Q390 53 370 41T325 18T267 -2T203 -11Q124 -11 79 39T34 156ZM208 26Q257 26 306 47T379 90L403 112Q401 255 396 290Q382 405 304 405Q235 405 183 332Q156 292 139 224T121 120Q121 71 146 49T208 26Z"></path></g></g></g></svg></mjx-container></p>
+<p>定义一个节点平衡指数是左子树重量除以整颗子树的重量</p>
+<p>如果平衡指数小于 <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.448ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 640 453"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D6FC" d="M34 156Q34 270 120 356T309 442Q379 442 421 402T478 304Q484 275 485 237V208Q534 282 560 374Q564 388 566 390T582 393Q603 393 603 385Q603 376 594 346T558 261T497 161L486 147L487 123Q489 67 495 47T514 26Q528 28 540 37T557 60Q559 67 562 68T577 70Q597 70 597 62Q597 56 591 43Q579 19 556 5T512 -10H505Q438 -10 414 62L411 69L400 61Q390 53 370 41T325 18T267 -2T203 -11Q124 -11 79 39T34 156ZM208 26Q257 26 306 47T379 90L403 112Q401 255 396 290Q382 405 304 405Q235 405 183 332Q156 292 139 224T121 120Q121 71 146 49T208 26Z"></path></g></g></g></svg></mjx-container>，说明不平衡，要调整</p>
+<p>这里调整指的是“旋转”， 而不是重构子树</p>
+<p>说是旋转，其实是切割并拼接</p>
+<p>一次旋转如果要向左转，就将左儿子和右儿子的左儿子合并成新的左儿子，右儿子的右儿子作为新的右儿子，原本的右儿子直接丢弃</p>
+<p>这里丢弃节点要回收，不然空间不对</p>
+<p>但是，一次旋转后可能还是不平衡，这是由于左转时新的左儿子可能过大导致的</p>
+<p>这进一步又是由于右儿子的左儿子过大导致的（旋转会将右儿子的左儿子与左儿子合并）</p>
+<p>所以要特判。如果右儿子平衡指数小于 <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.912ex;" xmlns="http://www.w3.org/2000/svg" width="4.864ex" height="2.878ex" role="img" focusable="false" viewBox="0 -868.9 2149.8 1271.9"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mfrac"><g data-mml-node="mrow" transform="translate(220,398) scale(0.707)"><g data-mml-node="mn"><path data-c="31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path></g><g data-mml-node="mo" transform="translate(500,0)"><path data-c="2212" d="M84 237T84 250T98 270H679Q694 262 694 250T679 230H98Q84 237 84 250Z"></path></g><g data-mml-node="mn" transform="translate(1278,0)"><path data-c="32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"></path></g><g data-mml-node="mi" transform="translate(1778,0)"><path data-c="1D6FC" d="M34 156Q34 270 120 356T309 442Q379 442 421 402T478 304Q484 275 485 237V208Q534 282 560 374Q564 388 566 390T582 393Q603 393 603 385Q603 376 594 346T558 261T497 161L486 147L487 123Q489 67 495 47T514 26Q528 28 540 37T557 60Q559 67 562 68T577 70Q597 70 597 62Q597 56 591 43Q579 19 556 5T512 -10H505Q438 -10 414 62L411 69L400 61Q390 53 370 41T325 18T267 -2T203 -11Q124 -11 79 39T34 156ZM208 26Q257 26 306 47T379 90L403 112Q401 255 396 290Q382 405 304 405Q235 405 183 332Q156 292 139 224T121 120Q121 71 146 49T208 26Z"></path></g></g><g data-mml-node="mrow" transform="translate(396.8,-345) scale(0.707)"><g data-mml-node="mn"><path data-c="31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path></g><g data-mml-node="mo" transform="translate(500,0)"><path data-c="2212" d="M84 237T84 250T98 270H679Q694 262 694 250T679 230H98Q84 237 84 250Z"></path></g><g data-mml-node="mi" transform="translate(1278,0)"><path data-c="1D6FC" d="M34 156Q34 270 120 356T309 442Q379 442 421 402T478 304Q484 275 485 237V208Q534 282 560 374Q564 388 566 390T582 393Q603 393 603 385Q603 376 594 346T558 261T497 161L486 147L487 123Q489 67 495 47T514 26Q528 28 540 37T557 60Q559 67 562 68T577 70Q597 70 597 62Q597 56 591 43Q579 19 556 5T512 -10H505Q438 -10 414 62L411 69L400 61Q390 53 370 41T325 18T267 -2T203 -11Q124 -11 79 39T34 156ZM208 26Q257 26 306 47T379 90L403 112Q401 255 396 290Q382 405 304 405Q235 405 183 332Q156 292 139 224T121 120Q121 71 146 49T208 26Z"></path></g></g><rect width="1909.8" height="60" x="120" y="220"></rect></g></g></g></svg></mjx-container> 就单旋，否则双旋（右儿子右旋，自己再左旋）</p>
+<p>右儿子右旋可以减小右儿子的左儿子大小</p>
+<p>右旋是对称的，同理</p>
+<p><em>数组版本：</em></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N=<span class="number">2e5</span><span class="number">+10</span>, INF=<span class="number">1e9</span><span class="number">+10</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">double</span> alpha = <span class="number">0.25</span>;</span><br><span class="line"><span class="type">int</span> T,n,i;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">WBLT</span>{</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">node</span>{</span><br><span class="line">        <span class="type">int</span> left;</span><br><span class="line">        <span class="type">int</span> right;</span><br><span class="line">        <span class="type">int</span> size;</span><br><span class="line">        <span class="type">int</span> value;</span><br><span class="line">        <span class="built_in">node</span>(<span class="type">int</span> size, <span class="type">int</span> value) : <span class="built_in">size</span>(size), <span class="built_in">value</span>(value) {left = <span class="number">0</span>, right = <span class="number">0</span>;}</span><br><span class="line">        <span class="built_in">node</span>(<span class="type">int</span> left, <span class="type">int</span> right, <span class="type">int</span> size, <span class="type">int</span> value) : </span><br><span class="line">            <span class="built_in">left</span>(left), <span class="built_in">right</span>(right), <span class="built_in">size</span>(size), <span class="built_in">value</span>(value) {} </span><br><span class="line">        <span class="built_in">node</span>(){}</span><br><span class="line">    }a[N];</span><br><span class="line">    <span class="type">int</span> cnt;</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">newnode</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> y, <span class="type">int</span> size, <span class="type">int</span> value)</span></span>{</span><br><span class="line">        a[++cnt] = <span class="built_in">node</span>(x, y, size, value);</span><br><span class="line">        <span class="keyword">return</span> cnt;</span><br><span class="line">    }</span><br><span class="line">    <span class="type">int</span> root;</span><br><span class="line">    <span class="built_in">WBLT</span>(){root = <span class="number">0</span>, cnt = <span class="number">0</span>;}</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">leaf</span><span class="params">(<span class="type">int</span> x)</span></span>{</span><br><span class="line">        <span class="keyword">return</span> (!a[x].left &amp;&amp; !a[x].right); </span><br><span class="line">    }</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">pushup</span><span class="params">(<span class="type">int</span> x)</span></span>{</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">leaf</span>(x)) <span class="keyword">return</span>;</span><br><span class="line">        a[x].value = a[a[x].right].value;</span><br><span class="line">        a[x].size = a[a[x].left].size + a[a[x].right].size;</span><br><span class="line">    }</span><br><span class="line">    <span class="comment">//void build();</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">copynode</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> y)</span></span>{</span><br><span class="line">        a[x] = a[y];</span><br><span class="line">        <span class="comment">/*x-&gt;left = y-&gt;left;</span></span><br><span class="line"><span class="comment">        x-&gt;right = y-&gt;right;</span></span><br><span class="line"><span class="comment">        x-&gt;size = y-&gt;size;</span></span><br><span class="line"><span class="comment">        x-&gt;value = y-&gt;value;*/</span></span><br><span class="line">    }</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">merge</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> y)</span></span>{</span><br><span class="line">        <span class="type">int</span> z = <span class="built_in">newnode</span>(x, y, <span class="number">0</span>, a[x].value);</span><br><span class="line">        <span class="built_in">pushup</span>(z);</span><br><span class="line">        <span class="keyword">return</span> z;</span><br><span class="line">    }</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">rotate</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> t)</span></span>{</span><br><span class="line">        <span class="keyword">if</span>(!t){</span><br><span class="line">            a[x].left = <span class="built_in">merge</span>(a[x].left, a[a[x].right].left);</span><br><span class="line">            <span class="type">int</span> newright = a[a[x].right].right;</span><br><span class="line">            <span class="comment">//delete(a[x].right);</span></span><br><span class="line">            a[x].right = newright;</span><br><span class="line">        }<span class="keyword">else</span>{</span><br><span class="line">            a[x].right = <span class="built_in">merge</span>(a[a[x].left].right, a[x].right);</span><br><span class="line">            <span class="type">int</span> newleft = a[a[x].left].left;</span><br><span class="line">            <span class="comment">//delete(x-&gt;left);</span></span><br><span class="line">            a[x].left = newleft;</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">maintain</span><span class="params">(<span class="type">int</span> x)</span></span>{</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">leaf</span>(x)) <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">if</span>(a[a[x].left].size &lt;= a[a[x].right].size){</span><br><span class="line">            <span class="keyword">if</span>(a[a[x].left].size &gt;= a[x].size * alpha) <span class="keyword">return</span>;</span><br><span class="line">            <span class="keyword">if</span>(a[a[a[x].right].left].size &gt;= a[a[x].right].size * (<span class="number">1</span> - <span class="number">2</span> * alpha) / (<span class="number">1</span> - alpha)){</span><br><span class="line">                <span class="built_in">rotate</span>(a[x].right, <span class="number">1</span>);</span><br><span class="line">            }</span><br><span class="line">            <span class="built_in">rotate</span>(x, <span class="number">0</span>);</span><br><span class="line">        }<span class="keyword">else</span>{</span><br><span class="line">            <span class="keyword">if</span>(a[a[x].right].size &gt;= a[x].size * alpha) <span class="keyword">return</span>;</span><br><span class="line">            <span class="keyword">if</span>(a[a[a[x].left].right].size &gt;= a[a[x].left].size * (<span class="number">1</span> - <span class="number">2</span> * alpha) / (<span class="number">1</span> - alpha)){</span><br><span class="line">                <span class="built_in">rotate</span>(a[x].left, <span class="number">0</span>);</span><br><span class="line">            }</span><br><span class="line">            <span class="built_in">rotate</span>(x, <span class="number">1</span>);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">Insert</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> value)</span></span>{</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(!root){</span><br><span class="line">            root = <span class="built_in">newnode</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, value);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">leaf</span>(x)){</span><br><span class="line">            a[x].left = <span class="built_in">newnode</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="built_in">min</span>(value, a[x].value)); <span class="comment">// value</span></span><br><span class="line">            a[x].right = <span class="built_in">newnode</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="built_in">max</span>(value, a[x].value)); <span class="comment">// x-&gt;value</span></span><br><span class="line">            <span class="built_in">pushup</span>(x);</span><br><span class="line">            <span class="built_in">maintain</span>(x);</span><br><span class="line">            <span class="keyword">return</span>; </span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">if</span>(a[a[x].left].value &gt;= value) <span class="built_in">Insert</span>(a[x].left, value);</span><br><span class="line">        <span class="keyword">else</span> <span class="built_in">Insert</span>(a[x].right, value);</span><br><span class="line">        <span class="built_in">pushup</span>(x);</span><br><span class="line">        <span class="built_in">maintain</span>(x);</span><br><span class="line">        </span><br><span class="line">    }</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">Delete</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> fa, <span class="type">int</span> value)</span></span>{</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">leaf</span>(x)){</span><br><span class="line">            <span class="type">int</span> left = a[fa].left;</span><br><span class="line">            <span class="type">int</span> right = a[fa].right;</span><br><span class="line">            <span class="keyword">if</span>(a[fa].left == x) <span class="built_in">copynode</span>(fa, a[fa].right);</span><br><span class="line">            <span class="keyword">else</span> <span class="built_in">copynode</span>(fa, a[fa].left);</span><br><span class="line">            <span class="comment">//delete(left), delete(right);</span></span><br><span class="line">            <span class="built_in">pushup</span>(fa);</span><br><span class="line">            <span class="built_in">maintain</span>(fa);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">if</span>(a[a[x].left].value &gt;= value) <span class="built_in">Delete</span>(a[x].left, x, value);</span><br><span class="line">        <span class="keyword">else</span> <span class="built_in">Delete</span>(a[x].right, x, value);</span><br><span class="line">        <span class="built_in">pushup</span>(x);</span><br><span class="line">        <span class="built_in">maintain</span>(x);</span><br><span class="line">        </span><br><span class="line">    }</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">rank</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> value)</span></span>{</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">leaf</span>(x)) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span>(a[a[x].left].value &gt;= value) <span class="keyword">return</span> <span class="built_in">rank</span>(a[x].left, value);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">return</span> <span class="built_in">rank</span>(a[x].right, value) + a[a[x].left].size;</span><br><span class="line">    }</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">kth</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> rank)</span></span>{</span><br><span class="line">        <span class="comment">//assert(x != 0);</span></span><br><span class="line">        <span class="keyword">if</span>(a[x].size == rank) <span class="keyword">return</span> a[x].value;</span><br><span class="line">        <span class="keyword">if</span>(a[a[x].left].size &gt;= rank) <span class="keyword">return</span> <span class="built_in">kth</span>(a[x].left, rank);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">return</span> <span class="built_in">kth</span>(a[x].right, rank - a[a[x].left].size);</span><br><span class="line">    }</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">merges</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> y)</span></span>{</span><br><span class="line">        <span class="keyword">if</span>(!x) <span class="keyword">return</span> y;</span><br><span class="line">        <span class="keyword">if</span>(!y) <span class="keyword">return</span> x;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">min</span>(a[x].size, a[y].size) &gt;= (a[x].size + a[y].size) * alpha) <span class="keyword">return</span> <span class="built_in">merge</span>(x, y);</span><br><span class="line">        <span class="keyword">if</span>(a[x].size &gt;= a[y].size){</span><br><span class="line">            <span class="keyword">if</span>(a[a[x].left].size &gt;= (a[x].size + a[y].size) * alpha){</span><br><span class="line">                <span class="keyword">return</span> <span class="built_in">merges</span>(a[x].left, <span class="built_in">merges</span>(a[x].right, y));</span><br><span class="line">            }<span class="keyword">else</span> <span class="keyword">return</span> <span class="built_in">merges</span>(<span class="built_in">merges</span>(a[x].left, a[a[x].right].left), <span class="built_in">merges</span>(a[a[x].right].right, y));</span><br><span class="line">        }<span class="keyword">else</span>{</span><br><span class="line">            <span class="keyword">if</span>(a[a[y].right].size &gt;= (a[x].size + a[y].size) * alpha){</span><br><span class="line">                <span class="keyword">return</span> <span class="built_in">merges</span>(<span class="built_in">merges</span>(x, a[y].left), a[y].right);</span><br><span class="line">            }<span class="keyword">else</span> <span class="keyword">return</span> <span class="built_in">merges</span>(<span class="built_in">merges</span>(x, a[a[y].left].left), <span class="built_in">merges</span>(a[a[y].left].right, a[y].right));</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">split</span><span class="params">(<span class="type">int</span> p, <span class="type">int</span> k, <span class="type">int</span> &amp;x, <span class="type">int</span> &amp;y)</span></span>{</span><br><span class="line">        <span class="keyword">if</span>(!k) <span class="keyword">return</span> x = <span class="number">0</span>, y = p, <span class="built_in">void</span>();</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">leaf</span>(p)) <span class="keyword">return</span> x = p, y = <span class="number">0</span>, <span class="built_in">void</span>();</span><br><span class="line">        <span class="keyword">if</span>(k &lt;= a[a[p].left].size){</span><br><span class="line">            <span class="built_in">split</span>(a[p].left, k, x, y);</span><br><span class="line">            y = <span class="built_in">merges</span>(y, a[p].right);</span><br><span class="line">        }<span class="keyword">else</span>{</span><br><span class="line">            <span class="built_in">split</span>(a[p].right, k - a[a[p].left].size, x, y);</span><br><span class="line">            x = <span class="built_in">merges</span>(a[p].left, x);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">traverse</span><span class="params">(<span class="type">int</span> x)</span></span>{</span><br><span class="line">        <span class="keyword">if</span>(!x) <span class="keyword">return</span>;</span><br><span class="line">        cerr&lt;&lt;a[x].value&lt;&lt;<span class="string">" "</span>&lt;&lt;a[x].size&lt;&lt;<span class="string">":("</span>;</span><br><span class="line">        <span class="keyword">if</span>(a[x].left) cerr&lt;&lt;a[a[x].left].value;</span><br><span class="line">        <span class="keyword">else</span> cerr&lt;&lt;<span class="string">"NULL"</span>;</span><br><span class="line">        cerr&lt;&lt; <span class="string">","</span>;</span><br><span class="line">        <span class="keyword">if</span>(a[x].right) cerr&lt;&lt;a[a[x].right].value;</span><br><span class="line">        <span class="keyword">else</span> cerr&lt;&lt;<span class="string">"NULL"</span>;</span><br><span class="line">        cerr&lt;&lt;<span class="string">")"</span>&lt;&lt;endl;</span><br><span class="line">        <span class="built_in">traverse</span>(a[x].left);</span><br><span class="line">        <span class="built_in">traverse</span>(a[x].right);</span><br><span class="line"></span><br><span class="line">    }</span><br><span class="line">};</span><br><span class="line">WBLT S;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">solve</span><span class="params">()</span> </span>{</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n);</span><br><span class="line">    S.root = S.cnt = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//cerr&lt;&lt;"OK";</span></span><br><span class="line">    S.<span class="built_in">Insert</span>(S.root, INF), S.<span class="built_in">Insert</span>(S.root, -INF);</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">1</span>;i&lt;=n;++i){</span><br><span class="line">        <span class="type">int</span> op,x;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;op,&amp;x);</span><br><span class="line">        <span class="keyword">if</span>(op==<span class="number">1</span>){</span><br><span class="line">            S.<span class="built_in">Insert</span>(S.root, x);</span><br><span class="line">        }<span class="keyword">else</span> <span class="keyword">if</span>(op==<span class="number">2</span>){</span><br><span class="line">            S.<span class="built_in">Delete</span>(S.root, <span class="number">0</span>, x);</span><br><span class="line">        }<span class="keyword">else</span> <span class="keyword">if</span>(op==<span class="number">3</span>){</span><br><span class="line">           <span class="built_in">printf</span>(<span class="string">"%d\n"</span>,S.<span class="built_in">rank</span>(S.root, x)<span class="number">-1</span>);</span><br><span class="line">        }<span class="keyword">else</span> <span class="keyword">if</span>(op==<span class="number">4</span>){</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"%d\n"</span>,S.<span class="built_in">kth</span>(S.root, x + <span class="number">1</span>));</span><br><span class="line">        }<span class="keyword">else</span> <span class="keyword">if</span>(op==<span class="number">5</span>){</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"%d\n"</span>,S.<span class="built_in">kth</span>(S.root, S.<span class="built_in">rank</span>(S.root, x) - <span class="number">1</span>));</span><br><span class="line">        }<span class="keyword">else</span> <span class="keyword">if</span>(op==<span class="number">6</span>){</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"%d\n"</span>,S.<span class="built_in">kth</span>(S.root, S.<span class="built_in">rank</span>(S.root, x + <span class="number">1</span>)));   </span><br><span class="line">        }</span><br><span class="line">	}</span><br><span class="line">}</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>{</span><br><span class="line">    <span class="comment">//freopen("P3369_8.in","r",stdin);</span></span><br><span class="line">    <span class="comment">//freopen("P3369_8.ans","w",stdout);</span></span><br><span class="line">    <span class="built_in">solve</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>指针版本：</em></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N=<span class="number">2e5</span><span class="number">+10</span>, INF=<span class="number">1e9</span><span class="number">+10</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">double</span> alpha = <span class="number">0.25</span>;</span><br><span class="line"><span class="type">int</span> T,n,i;</span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; <span class="keyword">class</span> <span class="title class_">WBLT</span>;</span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; <span class="keyword">class</span> <span class="title class_">node</span>{</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    node&lt;T&gt;* left;</span><br><span class="line">    node&lt;T&gt;* right;</span><br><span class="line">    <span class="type">int</span> size;</span><br><span class="line">    T value;</span><br><span class="line">    <span class="built_in">node</span>&lt;T&gt;(<span class="type">int</span> size, T value) : <span class="built_in">size</span>(size), <span class="built_in">value</span>(value) {left = <span class="literal">NULL</span>, right = <span class="literal">NULL</span>;}</span><br><span class="line">    <span class="built_in">node</span>&lt;T&gt;(node&lt;T&gt;* left, node&lt;T&gt;* right, <span class="type">int</span> size, T value) : </span><br><span class="line">        <span class="built_in">left</span>(left), <span class="built_in">right</span>(right), <span class="built_in">size</span>(size), <span class="built_in">value</span>(value) {}</span><br><span class="line">    <span class="keyword">friend</span> <span class="keyword">class</span> <span class="title class_">WBLT</span>&lt;T&gt;; </span><br><span class="line">};</span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; <span class="keyword">class</span> <span class="title class_">WBLT</span>{</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    node&lt;T&gt;* root;</span><br><span class="line">    <span class="built_in">WBLT</span>&lt;T&gt;(){root = <span class="literal">NULL</span>;}</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">leaf</span><span class="params">(node&lt;T&gt;* x)</span></span>{</span><br><span class="line">        <span class="keyword">return</span> (!x-&gt;left &amp;&amp; !x-&gt;right); </span><br><span class="line">    }</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">pushup</span><span class="params">(node&lt;T&gt;* x)</span></span>{</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">leaf</span>(x)) <span class="keyword">return</span>;</span><br><span class="line">        x-&gt;value = x-&gt;right-&gt;value;</span><br><span class="line">        x-&gt;size = x-&gt;left-&gt;size + x-&gt;right-&gt;size;</span><br><span class="line">    }</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">copynode</span><span class="params">(node&lt;T&gt;* x, node&lt;T&gt;* y)</span></span>{</span><br><span class="line">        *x = *y;</span><br><span class="line">    }</span><br><span class="line">    <span class="function">node&lt;T&gt;* <span class="title">merge</span><span class="params">(node&lt;T&gt;* x, node&lt;T&gt;* y)</span></span>{</span><br><span class="line">        node&lt;T&gt;* z = <span class="keyword">new</span> <span class="built_in">node</span>&lt;T&gt;(x, y, <span class="number">0</span>, x-&gt;value);</span><br><span class="line">        <span class="built_in">pushup</span>(z);</span><br><span class="line">        <span class="keyword">return</span> z;</span><br><span class="line">    }</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">rotate</span><span class="params">(node&lt;T&gt;* x, <span class="type">int</span> t)</span></span>{</span><br><span class="line">        <span class="keyword">if</span>(!t){</span><br><span class="line">            x-&gt;left = <span class="built_in">merge</span>(x-&gt;left, x-&gt;right-&gt;left);</span><br><span class="line">            node&lt;T&gt;* newright = x-&gt;right-&gt;right;</span><br><span class="line">            <span class="built_in">delete</span>(x-&gt;right);</span><br><span class="line">            x-&gt;right = newright;</span><br><span class="line">        }<span class="keyword">else</span>{</span><br><span class="line">            x-&gt;right = <span class="built_in">merge</span>(x-&gt;left-&gt;right, x-&gt;right);</span><br><span class="line">            node&lt;T&gt;* newleft = x-&gt;left-&gt;left;</span><br><span class="line">            <span class="built_in">delete</span>(x-&gt;left);</span><br><span class="line">            x-&gt;left = newleft;</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">maintain</span><span class="params">(node&lt;T&gt;* x)</span></span>{</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">leaf</span>(x)) <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">if</span>(x-&gt;left-&gt;size &lt;= x-&gt;right-&gt;size){</span><br><span class="line">            <span class="keyword">if</span>(x-&gt;left-&gt;size &gt;= x-&gt;size * alpha) <span class="keyword">return</span>;</span><br><span class="line">            <span class="keyword">if</span>(x-&gt;right-&gt;left-&gt;size &gt;= x-&gt;right-&gt;size * (<span class="number">1</span> - <span class="number">2</span> * alpha) / (<span class="number">1</span> - alpha)){</span><br><span class="line">                <span class="built_in">rotate</span>(x-&gt;right, <span class="number">1</span>);</span><br><span class="line">            }</span><br><span class="line">            <span class="built_in">rotate</span>(x, <span class="number">0</span>);</span><br><span class="line">        }<span class="keyword">else</span>{</span><br><span class="line">            <span class="keyword">if</span>(x-&gt;right-&gt;size &gt;= x-&gt;size * alpha) <span class="keyword">return</span>;</span><br><span class="line">            <span class="keyword">if</span>(x-&gt;left-&gt;right-&gt;size &gt;= x-&gt;left-&gt;size * (<span class="number">1</span> - <span class="number">2</span> * alpha) / (<span class="number">1</span> - alpha)){</span><br><span class="line">                <span class="built_in">rotate</span>(x-&gt;left, <span class="number">0</span>);</span><br><span class="line">            }</span><br><span class="line">            <span class="built_in">rotate</span>(x, <span class="number">1</span>);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">Insert</span><span class="params">(node&lt;T&gt;* x, T value)</span></span>{</span><br><span class="line">        <span class="keyword">if</span>(!root){</span><br><span class="line">            root = <span class="keyword">new</span> <span class="built_in">node</span>&lt;T&gt;(<span class="number">1</span>, value);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">leaf</span>(x)){</span><br><span class="line">            x-&gt;left = <span class="keyword">new</span> <span class="built_in">node</span>&lt;T&gt;(<span class="number">1</span>, <span class="built_in">min</span>(value, x-&gt;value)); <span class="comment">// value</span></span><br><span class="line">            x-&gt;right = <span class="keyword">new</span> <span class="built_in">node</span>&lt;T&gt;(<span class="number">1</span>, <span class="built_in">max</span>(value, x-&gt;value)); <span class="comment">// x-&gt;value</span></span><br><span class="line">            <span class="built_in">pushup</span>(x);</span><br><span class="line">            <span class="built_in">maintain</span>(x);</span><br><span class="line">            <span class="keyword">return</span>; </span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">if</span>(x-&gt;left-&gt;value &gt;= value) <span class="built_in">Insert</span>(x-&gt;left, value);</span><br><span class="line">        <span class="keyword">else</span> <span class="built_in">Insert</span>(x-&gt;right, value);</span><br><span class="line">        <span class="built_in">pushup</span>(x);</span><br><span class="line">        <span class="built_in">maintain</span>(x);</span><br><span class="line">    }</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">Delete</span><span class="params">(node&lt;T&gt;* x, node&lt;T&gt;* fa, T value)</span></span>{</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">leaf</span>(x)){</span><br><span class="line">            node&lt;T&gt;* left = fa-&gt;left;</span><br><span class="line">            node&lt;T&gt;* right = fa-&gt;right;</span><br><span class="line">            <span class="keyword">if</span>(fa-&gt;left == x) <span class="built_in">copynode</span>(fa, fa-&gt;right);</span><br><span class="line">            <span class="keyword">else</span> <span class="built_in">copynode</span>(fa, fa-&gt;left);</span><br><span class="line">            <span class="built_in">delete</span>(left), <span class="built_in">delete</span>(right);</span><br><span class="line">            <span class="built_in">pushup</span>(fa);</span><br><span class="line">            <span class="built_in">maintain</span>(fa);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">if</span>(x-&gt;left-&gt;value &gt;= value) <span class="built_in">Delete</span>(x-&gt;left, x, value);</span><br><span class="line">        <span class="keyword">else</span> <span class="built_in">Delete</span>(x-&gt;right, x, value);</span><br><span class="line">        <span class="built_in">pushup</span>(x);</span><br><span class="line">        <span class="built_in">maintain</span>(x);</span><br><span class="line">    }</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">rank</span><span class="params">(node&lt;T&gt;* x, T value)</span></span>{</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">leaf</span>(x)) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span>(x-&gt;left-&gt;value &gt;= value) <span class="keyword">return</span> <span class="built_in">rank</span>(x-&gt;left, value);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">return</span> <span class="built_in">rank</span>(x-&gt;right, value) + x-&gt;left-&gt;size;</span><br><span class="line">    }</span><br><span class="line">    <span class="function">T <span class="title">kth</span><span class="params">(node&lt;T&gt;* x, <span class="type">int</span> rank)</span></span>{</span><br><span class="line">        <span class="built_in">assert</span>(x != <span class="literal">NULL</span>);</span><br><span class="line">        <span class="keyword">if</span>(x-&gt;size == rank) <span class="keyword">return</span> x-&gt;value;</span><br><span class="line">        <span class="keyword">if</span>(x-&gt;left-&gt;size &gt;= rank) <span class="keyword">return</span> <span class="built_in">kth</span>(x-&gt;left, rank);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">return</span> <span class="built_in">kth</span>(x-&gt;right, rank - x-&gt;left-&gt;size);</span><br><span class="line">    }</span><br><span class="line">    <span class="function">node&lt;T&gt;* <span class="title">merges</span><span class="params">(node&lt;T&gt;* x, node&lt;T&gt;* y)</span></span>{</span><br><span class="line">        <span class="keyword">if</span>(!x) <span class="keyword">return</span> y;</span><br><span class="line">        <span class="keyword">if</span>(!y) <span class="keyword">return</span> x;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">min</span>(x-&gt;size, y-&gt;size) &gt;= (x-&gt;size + y-&gt;size) * alpha) <span class="keyword">return</span> <span class="built_in">merge</span>(x, y);</span><br><span class="line">        <span class="keyword">if</span>(x-&gt;size &gt;= y-&gt;size){</span><br><span class="line">            <span class="keyword">if</span>(x-&gt;left-&gt;size &gt;= (x-&gt;size + y-&gt;size) * alpha){</span><br><span class="line">                <span class="keyword">return</span> <span class="built_in">merges</span>(x-&gt;left, <span class="built_in">merges</span>(x-&gt;right, y));</span><br><span class="line">            }<span class="keyword">else</span> <span class="keyword">return</span> <span class="built_in">merges</span>(<span class="built_in">merges</span>(x-&gt;left, x-&gt;right-&gt;left), <span class="built_in">merges</span>(x-&gt;right-&gt;right, y));</span><br><span class="line">        }<span class="keyword">else</span>{</span><br><span class="line">            <span class="keyword">if</span>(y-&gt;right-&gt;size &gt;= (x-&gt;size + y-&gt;size) * alpha){</span><br><span class="line">                <span class="keyword">return</span> <span class="built_in">merges</span>(<span class="built_in">merges</span>(x, y-&gt;left), y-&gt;right);</span><br><span class="line">            }<span class="keyword">else</span> <span class="keyword">return</span> <span class="built_in">merges</span>(<span class="built_in">merges</span>(x, y-&gt;left-&gt;left), <span class="built_in">merges</span>(y-&gt;left-&gt;right, y-&gt;right));</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">split</span><span class="params">(node&lt;T&gt;* p, <span class="type">int</span> k, node&lt;T&gt;* x, node&lt;T&gt;* y)</span></span>{</span><br><span class="line">        <span class="keyword">if</span>(!k) <span class="keyword">return</span> x = <span class="literal">NULL</span>, y = p, <span class="built_in">void</span>();</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">leaf</span>(p)) <span class="keyword">return</span> x = p, y = <span class="literal">NULL</span>, <span class="built_in">void</span>();</span><br><span class="line">        <span class="keyword">if</span>(k &lt;= p-&gt;left-&gt;size){</span><br><span class="line">            <span class="built_in">split</span>(p-&gt;left, k, x, y);</span><br><span class="line">            y = <span class="built_in">merges</span>(y, p-&gt;right);</span><br><span class="line">        }<span class="keyword">else</span>{</span><br><span class="line">            <span class="built_in">split</span>(p-&gt;right, k - p-&gt;left-&gt;size, x, y);</span><br><span class="line">            x = <span class="built_in">merges</span>(p-&gt;left, x);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">traverse</span><span class="params">(node&lt;T&gt;* x)</span></span>{</span><br><span class="line">        <span class="keyword">if</span>(!x) <span class="keyword">return</span>;</span><br><span class="line">        cerr&lt;&lt;x-&gt;value&lt;&lt;<span class="string">" "</span>&lt;&lt;x-&gt;size&lt;&lt;<span class="string">":("</span>;</span><br><span class="line">        <span class="keyword">if</span>(x-&gt;left) cerr&lt;&lt;x-&gt;left-&gt;value;</span><br><span class="line">        <span class="keyword">else</span> cerr&lt;&lt;<span class="string">"NULL"</span>;</span><br><span class="line">        cerr&lt;&lt; <span class="string">","</span>;</span><br><span class="line">        <span class="keyword">if</span>(x-&gt;right) cerr&lt;&lt;x-&gt;right-&gt;value;</span><br><span class="line">        <span class="keyword">else</span> cerr&lt;&lt;<span class="string">"NULL"</span>;</span><br><span class="line">        cerr&lt;&lt;<span class="string">")"</span>&lt;&lt;endl;</span><br><span class="line">        <span class="built_in">traverse</span>(x-&gt;left);</span><br><span class="line">        <span class="built_in">traverse</span>(x-&gt;right);</span><br><span class="line">    }</span><br><span class="line">};</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">solve</span><span class="params">()</span> </span>{</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n);</span><br><span class="line">    WBLT&lt;<span class="type">int</span>&gt;* S = <span class="keyword">new</span> <span class="built_in">WBLT</span>&lt;<span class="type">int</span>&gt;();</span><br><span class="line">    S-&gt;<span class="built_in">Insert</span>(S-&gt;root, INF), S-&gt;<span class="built_in">Insert</span>(S-&gt;root, -INF);</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">1</span>;i&lt;=n;++i){</span><br><span class="line">        <span class="type">int</span> op,x;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;op,&amp;x);</span><br><span class="line">        <span class="keyword">if</span>(op==<span class="number">1</span>){</span><br><span class="line">            S-&gt;<span class="built_in">Insert</span>(S-&gt;root, x);</span><br><span class="line">        }<span class="keyword">else</span> <span class="keyword">if</span>(op==<span class="number">2</span>){</span><br><span class="line">            S-&gt;<span class="built_in">Delete</span>(S-&gt;root, <span class="literal">NULL</span>, x);</span><br><span class="line">        }<span class="keyword">else</span> <span class="keyword">if</span>(op==<span class="number">3</span>){</span><br><span class="line">           <span class="built_in">printf</span>(<span class="string">"%d\n"</span>,S-&gt;<span class="built_in">rank</span>(S-&gt;root, x)<span class="number">-1</span>);</span><br><span class="line">        }<span class="keyword">else</span> <span class="keyword">if</span>(op==<span class="number">4</span>){</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"%d\n"</span>,S-&gt;<span class="built_in">kth</span>(S-&gt;root, x + <span class="number">1</span>));</span><br><span class="line">        }<span class="keyword">else</span> <span class="keyword">if</span>(op==<span class="number">5</span>){</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"%d\n"</span>,S-&gt;<span class="built_in">kth</span>(S-&gt;root, S-&gt;<span class="built_in">rank</span>(S-&gt;root, x) - <span class="number">1</span>));</span><br><span class="line">        }<span class="keyword">else</span> <span class="keyword">if</span>(op==<span class="number">6</span>){</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"%d\n"</span>,S-&gt;<span class="built_in">kth</span>(S-&gt;root, S-&gt;<span class="built_in">rank</span>(S-&gt;root, x + <span class="number">1</span>)));   </span><br><span class="line">        }</span><br><span class="line">	}</span><br><span class="line">}</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>{</span><br><span class="line">    <span class="built_in">solve</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="有关合并与分裂"><a href="#有关合并与分裂" class="headerlink" title="有关合并与分裂"></a>有关合并与分裂</h2><p><del>用指针写这两个就是史</del></p>
+<p><del>用这个树写文艺平衡树就是史，建议转去写Splay</del></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="https://github.com/AKonjac0/AKonjac0.github.io">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Weight-Balanced-Leafy-Tree"><span class="toc-number">1.</span> <span class="toc-text">Weight Balanced Leafy Tree</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%89%E5%85%B3%E5%90%88%E5%B9%B6%E4%B8%8E%E5%88%86%E8%A3%82"><span class="toc-number">1.2.</span> <span class="toc-text">有关合并与分裂</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://akonjac0.github.io/2024/10/24/WBLT/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://akonjac0.github.io/2024/10/24/WBLT/&text=WBLT"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://akonjac0.github.io/2024/10/24/WBLT/&title=WBLT"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://akonjac0.github.io/2024/10/24/WBLT/&is_video=false&description=WBLT"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=WBLT&body=Check out this article: http://akonjac0.github.io/2024/10/24/WBLT/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://akonjac0.github.io/2024/10/24/WBLT/&title=WBLT"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://akonjac0.github.io/2024/10/24/WBLT/&title=WBLT"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://akonjac0.github.io/2024/10/24/WBLT/&title=WBLT"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://akonjac0.github.io/2024/10/24/WBLT/&title=WBLT"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://akonjac0.github.io/2024/10/24/WBLT/&name=WBLT&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://akonjac0.github.io/2024/10/24/WBLT/&t=WBLT"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2024-2077
+    AKonjac_
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/AKonjac0/AKonjac0.github.io">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
