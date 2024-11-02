@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Inverted File Index是时候总结一下这一坨了 但是懒得写，把 report 放上来好了 Inverted File Index CreationThe inverted file index, known as IFI, are created in order to handle seraching queries efficiently. Due to memory limit">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IFI">
+<meta property="og:url" content="http://akonjac0.github.io/2024/11/02/IFI/index.html">
+<meta property="og:site_name" content="My blog">
+<meta property="og:description" content="Inverted File Index是时候总结一下这一坨了 但是懒得写，把 report 放上来好了 Inverted File Index CreationThe inverted file index, known as IFI, are created in order to handle seraching queries efficiently. Due to memory limit">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-11-02T01:07:03.944Z">
+<meta property="article:modified_time" content="2024-11-02T01:12:05.279Z">
+<meta property="article:author" content="AKonjac_">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>IFI</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/AKonjac0/AKonjac0.github.io">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2024/11/01/Misra-Gries/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://akonjac0.github.io/2024/11/02/IFI/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://akonjac0.github.io/2024/11/02/IFI/&text=IFI"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://akonjac0.github.io/2024/11/02/IFI/&title=IFI"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://akonjac0.github.io/2024/11/02/IFI/&is_video=false&description=IFI"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=IFI&body=Check out this article: http://akonjac0.github.io/2024/11/02/IFI/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://akonjac0.github.io/2024/11/02/IFI/&title=IFI"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://akonjac0.github.io/2024/11/02/IFI/&title=IFI"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://akonjac0.github.io/2024/11/02/IFI/&title=IFI"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://akonjac0.github.io/2024/11/02/IFI/&title=IFI"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://akonjac0.github.io/2024/11/02/IFI/&name=IFI&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://akonjac0.github.io/2024/11/02/IFI/&t=IFI"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Inverted-File-Index"><span class="toc-number">1.</span> <span class="toc-text">Inverted File Index</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Inverted-File-Index-Creation"><span class="toc-number">1.1.</span> <span class="toc-text">Inverted File Index Creation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Memory-Based"><span class="toc-number">1.1.1.</span> <span class="toc-text">Memory Based</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Sort-Based"><span class="toc-number">1.1.2.</span> <span class="toc-text">Sort Based</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Memory-Usage-and-Total-Time"><span class="toc-number">1.2.</span> <span class="toc-text">Memory Usage and Total Time</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        IFI
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">AKonjac_</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-11-02T01:07:03.944Z" class="dt-published" itemprop="datePublished">2024-11-02</time>
+        
+        (Updated: <time datetime="2024-11-02T01:12:05.279Z" class="dt-updated" itemprop="dateModified">2024-11-02</time>)
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="Inverted-File-Index"><a href="#Inverted-File-Index" class="headerlink" title="Inverted File Index"></a>Inverted File Index</h1><p>是时候总结一下这一坨了</p>
+<p>但是懒得写，把 report 放上来好了</p>
+<h2 id="Inverted-File-Index-Creation"><a href="#Inverted-File-Index-Creation" class="headerlink" title="Inverted File Index Creation"></a>Inverted File Index Creation</h2><p>The inverted file index, known as IFI, are created in order to handle seraching queries efficiently. Due to memory limit and huge data, there are two different ways to build a IFI on the original data. Here we call them “Memory Based Inversion” and “Sort Based Inversion”.  </p>
+<h3 id="Memory-Based"><a href="#Memory-Based" class="headerlink" title="Memory Based"></a>Memory Based</h3><p>We use a dynamic dictionary data structure (B-tree, hash table) to record distinct terms, with a linked list of nodes storing the Id of documents and frequency of the occurence of the word.</p>
+<p>The dictionary data structure is maintained in memory, therefore it’s called Memory Based.</p>
+<p>Here we use B+ tree to deal with the terms. We also implement IFI using STL-map and compare the results of the two data structures.</p>
+<p>Once all documents have been processed, the whole B+ tree is traversed, and the list of terms and corresponding occurence frequency is written.</p>
+<p>the process can be shown in pseudo-code:</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">function</span> <span class="selector-tag">MEMORY-BASED-INVERSION</span>(T):</span><br><span class="line">    <span class="comment">// Initialization</span></span><br><span class="line">    <span class="selector-tag">Create</span> <span class="selector-tag">an</span> <span class="selector-tag">empty</span> <span class="selector-tag">dictionary</span> <span class="selector-tag">S</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Phase one: collection of term appearances</span></span><br><span class="line">    <span class="selector-tag">For</span> <span class="selector-tag">each</span> <span class="selector-tag">document</span> <span class="selector-tag">D</span>, <span class="selector-tag">d</span> <span class="selector-tag">in</span> <span class="selector-tag">the</span> <span class="selector-tag">collection</span> <span class="selector-tag">T</span>:</span><br><span class="line">        <span class="comment">// d is the index of document D</span></span><br><span class="line">        <span class="selector-tag">Parse</span> <span class="selector-tag">D</span> <span class="selector-tag">into</span> <span class="selector-tag">index</span> <span class="selector-tag">terms</span></span><br><span class="line">        <span class="selector-tag">For</span> <span class="selector-tag">each</span> <span class="selector-tag">index</span> <span class="selector-tag">term</span> <span class="selector-tag">t</span> <span class="selector-tag">in</span> <span class="selector-tag">D</span>:</span><br><span class="line">            <span class="selector-tag">f</span> = <span class="selector-tag">frequency</span> <span class="selector-tag">of</span> <span class="selector-tag">t</span> <span class="selector-tag">in</span> <span class="selector-tag">D</span></span><br><span class="line">            <span class="selector-tag">If</span> <span class="selector-tag">t</span> <span class="selector-tag">is</span> <span class="selector-tag">not</span> <span class="selector-tag">in</span> <span class="selector-tag">S</span>:</span><br><span class="line">                <span class="selector-tag">Insert</span> <span class="selector-tag">t</span> <span class="selector-tag">into</span> <span class="selector-tag">S</span> <span class="selector-tag">with</span> <span class="selector-tag">an</span> <span class="selector-tag">empty</span> <span class="selector-tag">list</span></span><br><span class="line">            <span class="selector-tag">Append</span> (d, f) <span class="selector-tag">to</span> <span class="selector-tag">the</span> <span class="selector-tag">list</span> <span class="selector-tag">corresponding</span> <span class="selector-tag">to</span> <span class="selector-tag">t</span> <span class="selector-tag">in</span> <span class="selector-tag">S</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Phase two: output of inverted file</span></span><br><span class="line">    <span class="selector-tag">For</span> <span class="selector-tag">each</span> <span class="selector-tag">term</span> <span class="selector-tag">t</span> <span class="selector-tag">in</span> <span class="selector-tag">S</span>:</span><br><span class="line">        <span class="selector-tag">Start</span> <span class="selector-tag">a</span> <span class="selector-tag">new</span> <span class="selector-tag">inverted</span> <span class="selector-tag">file</span> <span class="selector-tag">entry</span></span><br><span class="line">        <span class="selector-tag">For</span> <span class="selector-tag">each</span> (d, f) <span class="selector-tag">in</span> <span class="selector-tag">the</span> <span class="selector-tag">list</span> <span class="selector-tag">corresponding</span> <span class="selector-tag">to</span> <span class="selector-tag">t</span>:</span><br><span class="line">            <span class="selector-tag">Append</span> (d, f) <span class="selector-tag">to</span> <span class="selector-tag">the</span> <span class="selector-tag">inverted</span> <span class="selector-tag">file</span> <span class="selector-tag">entry</span></span><br><span class="line">        <span class="selector-tag">Write</span> <span class="selector-tag">the</span> <span class="selector-tag">inverted</span> <span class="selector-tag">file</span> <span class="selector-tag">entry</span> <span class="selector-tag">to</span> <span class="selector-tag">the</span> <span class="selector-tag">final</span> <span class="selector-tag">inverted</span> <span class="selector-tag">file</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="Sort-Based"><a href="#Sort-Based" class="headerlink" title="Sort Based"></a>Sort Based</h3><p>In Memory Based Inversion, the main problem is that it consumes too much memory and dealing with really huge data is difficult. </p>
+<p>Therefore, we can put the records on the disk insread of memory. </p>
+<p>To be specific, we write tuple consisting of term number, document index and frequency to a temp file, and run merging sort on the temp file. </p>
+<p>To sort the records (tuples), we define a compare function, if term <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="0.817ex" height="1.441ex" role="img" focusable="false" viewBox="0 -626 361 637"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D461" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path></g></g></g></svg></mjx-container> of one record is lexicographically smaller than another record, then we call the record smaller. </p>
+<p>If <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="0.817ex" height="1.441ex" role="img" focusable="false" viewBox="0 -626 361 637"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D461" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path></g></g></g></svg></mjx-container> is equal, then compare document index <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.023ex;" xmlns="http://www.w3.org/2000/svg" width="1.176ex" height="1.593ex" role="img" focusable="false" viewBox="0 -694 520 704"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D451" d="M366 683Q367 683 438 688T511 694Q523 694 523 686Q523 679 450 384T375 83T374 68Q374 26 402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487H491Q506 153 506 145Q506 140 503 129Q490 79 473 48T445 8T417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157Q33 205 53 255T101 341Q148 398 195 420T280 442Q336 442 364 400Q369 394 369 396Q370 400 396 505T424 616Q424 629 417 632T378 637H357Q351 643 351 645T353 664Q358 683 366 683ZM352 326Q329 405 277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q233 26 290 98L298 109L352 326Z"></path></g></g></g></svg></mjx-container> and return the record with smaller index.</p>
+<p>Every run we read <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.179ex" height="1.595ex" role="img" focusable="false" viewBox="0 -694 521 705"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D458" d="M121 647Q121 657 125 670T137 683Q138 683 209 688T282 694Q294 694 294 686Q294 679 244 477Q194 279 194 272Q213 282 223 291Q247 309 292 354T362 415Q402 442 438 442Q468 442 485 423T503 369Q503 344 496 327T477 302T456 291T438 288Q418 288 406 299T394 328Q394 353 410 369T442 390L458 393Q446 405 434 405H430Q398 402 367 380T294 316T228 255Q230 254 243 252T267 246T293 238T320 224T342 206T359 180T365 147Q365 130 360 106T354 66Q354 26 381 26Q429 26 459 145Q461 153 479 153H483Q499 153 499 144Q499 139 496 130Q455 -11 378 -11Q333 -11 305 15T277 90Q277 108 280 121T283 145Q283 167 269 183T234 206T200 217T182 220H180Q168 178 159 139T145 81T136 44T129 20T122 7T111 -2Q98 -11 83 -11Q66 -11 57 -1T48 16Q48 26 85 176T158 471L195 616Q196 629 188 632T149 637H144Q134 637 131 637T124 640T121 647Z"></path></g></g></g></svg></mjx-container> records from the temp file, sort them and write them back to a chunk file.</p>
+<p>After this process there will be <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.798ex;" xmlns="http://www.w3.org/2000/svg" width="1.955ex" height="2.397ex" role="img" focusable="false" viewBox="0 -706.5 864.3 1059.3"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mfrac"><g data-mml-node="mi" transform="translate(220,394) scale(0.707)"><path data-c="1D45B" d="M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(247.9,-345) scale(0.707)"><path data-c="1D458" d="M121 647Q121 657 125 670T137 683Q138 683 209 688T282 694Q294 694 294 686Q294 679 244 477Q194 279 194 272Q213 282 223 291Q247 309 292 354T362 415Q402 442 438 442Q468 442 485 423T503 369Q503 344 496 327T477 302T456 291T438 288Q418 288 406 299T394 328Q394 353 410 369T442 390L458 393Q446 405 434 405H430Q398 402 367 380T294 316T228 255Q230 254 243 252T267 246T293 238T320 224T342 206T359 180T365 147Q365 130 360 106T354 66Q354 26 381 26Q429 26 459 145Q461 153 479 153H483Q499 153 499 144Q499 139 496 130Q455 -11 378 -11Q333 -11 305 15T277 90Q277 108 280 121T283 145Q283 167 269 183T234 206T200 217T182 220H180Q168 178 159 139T145 81T136 44T129 20T122 7T111 -2Q98 -11 83 -11Q66 -11 57 -1T48 16Q48 26 85 176T158 471L195 616Q196 629 188 632T149 637H144Q134 637 131 637T124 640T121 647Z"></path></g><rect width="624.3" height="60" x="120" y="220"></rect></g></g></g></svg></mjx-container> chunk files</p>
+<p>Then, read exactly one record from each chunk file, and select the minimum record (compare function are specified above) from the <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.798ex;" xmlns="http://www.w3.org/2000/svg" width="1.955ex" height="2.397ex" role="img" focusable="false" viewBox="0 -706.5 864.3 1059.3"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mfrac"><g data-mml-node="mi" transform="translate(220,394) scale(0.707)"><path data-c="1D45B" d="M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(247.9,-345) scale(0.707)"><path data-c="1D458" d="M121 647Q121 657 125 670T137 683Q138 683 209 688T282 694Q294 694 294 686Q294 679 244 477Q194 279 194 272Q213 282 223 291Q247 309 292 354T362 415Q402 442 438 442Q468 442 485 423T503 369Q503 344 496 327T477 302T456 291T438 288Q418 288 406 299T394 328Q394 353 410 369T442 390L458 393Q446 405 434 405H430Q398 402 367 380T294 316T228 255Q230 254 243 252T267 246T293 238T320 224T342 206T359 180T365 147Q365 130 360 106T354 66Q354 26 381 26Q429 26 459 145Q461 153 479 153H483Q499 153 499 144Q499 139 496 130Q455 -11 378 -11Q333 -11 305 15T277 90Q277 108 280 121T283 145Q283 167 269 183T234 206T200 217T182 220H180Q168 178 159 139T145 81T136 44T129 20T122 7T111 -2Q98 -11 83 -11Q66 -11 57 -1T48 16Q48 26 85 176T158 471L195 616Q196 629 188 632T149 637H144Q134 637 131 637T124 640T121 647Z"></path></g><rect width="624.3" height="60" x="120" y="220"></rect></g></g></g></svg></mjx-container> records, where <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.357ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 600 453"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D45B" d="M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z"></path></g></g></g></svg></mjx-container> is the total number of records, and write it into the final inverted file.</p>
+<p>support the minimum record is from chunk file <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="0.781ex" height="1.52ex" role="img" focusable="false" viewBox="0 -661 345 672"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g></g></g></svg></mjx-container>, then read another record from file <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="0.781ex" height="1.52ex" role="img" focusable="false" viewBox="0 -661 345 672"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g></g></g></svg></mjx-container>.</p>
+<p>Repeat until there’s no more records.</p>
+<p>We can see that the selecting process can be maintained by a min-heap.</p>
+<p>If we select <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.491ex;" xmlns="http://www.w3.org/2000/svg" width="7.483ex" height="2.398ex" role="img" focusable="false" viewBox="0 -843 3307.6 1060"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D458" d="M121 647Q121 657 125 670T137 683Q138 683 209 688T282 694Q294 694 294 686Q294 679 244 477Q194 279 194 272Q213 282 223 291Q247 309 292 354T362 415Q402 442 438 442Q468 442 485 423T503 369Q503 344 496 327T477 302T456 291T438 288Q418 288 406 299T394 328Q394 353 410 369T442 390L458 393Q446 405 434 405H430Q398 402 367 380T294 316T228 255Q230 254 243 252T267 246T293 238T320 224T342 206T359 180T365 147Q365 130 360 106T354 66Q354 26 381 26Q429 26 459 145Q461 153 479 153H483Q499 153 499 144Q499 139 496 130Q455 -11 378 -11Q333 -11 305 15T277 90Q277 108 280 121T283 145Q283 167 269 183T234 206T200 217T182 220H180Q168 178 159 139T145 81T136 44T129 20T122 7T111 -2Q98 -11 83 -11Q66 -11 57 -1T48 16Q48 26 85 176T158 471L195 616Q196 629 188 632T149 637H144Q134 637 131 637T124 640T121 647Z"></path></g><g data-mml-node="mo" transform="translate(798.8,0)"><path data-c="3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path></g><g data-mml-node="msqrt" transform="translate(1854.6,0)"><g transform="translate(853,0)"><g data-mml-node="mi"><path data-c="1D45B" d="M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z"></path></g></g><g data-mml-node="mo" transform="translate(0,-17)"><path data-c="221A" d="M95 178Q89 178 81 186T72 200T103 230T169 280T207 309Q209 311 212 311H213Q219 311 227 294T281 177Q300 134 312 108L397 -77Q398 -77 501 136T707 565T814 786Q820 800 834 800Q841 800 846 794T853 782V776L620 293L385 -193Q381 -200 366 -200Q357 -200 354 -197Q352 -195 256 15L160 225L144 214Q129 202 113 190T95 178Z"></path></g><rect width="600" height="60" x="853" y="723"></rect></g></g></g></svg></mjx-container>, then the memory used to store min-heap and sorting process is <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="6.774ex" height="2.473ex" role="img" focusable="false" viewBox="0 -843 2994 1093"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D442" d="M740 435Q740 320 676 213T511 42T304 -22Q207 -22 138 35T51 201Q50 209 50 244Q50 346 98 438T227 601Q351 704 476 704Q514 704 524 703Q621 689 680 617T740 435ZM637 476Q637 565 591 615T476 665Q396 665 322 605Q242 542 200 428T157 216Q157 126 200 73T314 19Q404 19 485 98T608 313Q637 408 637 476Z"></path></g><g data-mml-node="mo" transform="translate(763,0)"><path data-c="28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z"></path></g><g data-mml-node="msqrt" transform="translate(1152,0)"><g transform="translate(853,0)"><g data-mml-node="mi"><path data-c="1D45B" d="M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z"></path></g></g><g data-mml-node="mo" transform="translate(0,-17)"><path data-c="221A" d="M95 178Q89 178 81 186T72 200T103 230T169 280T207 309Q209 311 212 311H213Q219 311 227 294T281 177Q300 134 312 108L397 -77Q398 -77 501 136T707 565T814 786Q820 800 834 800Q841 800 846 794T853 782V776L620 293L385 -193Q381 -200 366 -200Q357 -200 354 -197Q352 -195 256 15L160 225L144 214Q129 202 113 190T95 178Z"></path></g><rect width="600" height="60" x="853" y="723"></rect></g><g data-mml-node="mo" transform="translate(2605,0)"><path data-c="29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z"></path></g></g></g></svg></mjx-container> , then we can have the best result to reduce memory usage.</p>
+<p>To represent in pseudo-code:</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">function</span> <span class="selector-tag">SORT-BASED-INVERSION</span>(T):</span><br><span class="line">    <span class="comment">// Initialization</span></span><br><span class="line">    <span class="selector-tag">Create</span> <span class="selector-tag">an</span> <span class="selector-tag">empty</span> <span class="selector-tag">dictionary</span> <span class="selector-tag">S</span></span><br><span class="line">    <span class="selector-tag">Create</span> <span class="selector-tag">an</span> <span class="selector-tag">empty</span> <span class="selector-tag">temporary</span> <span class="selector-tag">file</span> <span class="selector-tag">on</span> <span class="selector-tag">disk</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Process text and write to temporary file</span></span><br><span class="line">    <span class="selector-tag">For</span> <span class="selector-tag">each</span> <span class="selector-tag">document</span> <span class="selector-tag">D</span>, <span class="selector-tag">d</span> <span class="selector-tag">in</span> <span class="selector-tag">the</span> <span class="selector-tag">collection</span> <span class="selector-tag">T</span>:</span><br><span class="line">        <span class="selector-tag">Parse</span> <span class="selector-tag">D</span> <span class="selector-tag">into</span> <span class="selector-tag">index</span> <span class="selector-tag">terms</span></span><br><span class="line">        <span class="selector-tag">For</span> <span class="selector-tag">each</span> <span class="selector-tag">index</span> <span class="selector-tag">term</span> <span class="selector-tag">t</span> <span class="selector-tag">in</span> <span class="selector-tag">D</span>:</span><br><span class="line">            <span class="selector-tag">f</span> = <span class="selector-tag">frequency</span> <span class="selector-tag">of</span> <span class="selector-tag">t</span> <span class="selector-tag">in</span> <span class="selector-tag">D</span></span><br><span class="line">            <span class="selector-tag">If</span> <span class="selector-tag">t</span> <span class="selector-tag">is</span> <span class="selector-tag">not</span> <span class="selector-tag">in</span> <span class="selector-tag">S</span>:</span><br><span class="line">                <span class="selector-tag">Insert</span> <span class="selector-tag">t</span> <span class="selector-tag">into</span> <span class="selector-tag">S</span> <span class="selector-tag">with</span> <span class="selector-tag">a</span> <span class="selector-tag">unique</span> <span class="selector-tag">term</span> <span class="selector-tag">number</span></span><br><span class="line">            <span class="selector-tag">Write</span> <span class="selector-tag">record</span> (t, d, f) <span class="selector-tag">to</span> <span class="selector-tag">the</span> <span class="selector-tag">temporary</span> <span class="selector-tag">file</span> </span><br><span class="line">            <span class="comment">// t is represented by its term number from S</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Internal sorting to make runs</span></span><br><span class="line">    <span class="selector-tag">Let</span> <span class="selector-tag">k</span> <span class="selector-tag">be</span> <span class="selector-tag">the</span> <span class="selector-tag">number</span> <span class="selector-tag">of</span> <span class="selector-tag">records</span> <span class="selector-tag">that</span> <span class="selector-tag">can</span> <span class="selector-tag">be</span> <span class="selector-tag">held</span> <span class="selector-tag">in</span> <span class="selector-tag">memory</span></span><br><span class="line">    <span class="selector-tag">Repeat</span> <span class="selector-tag">until</span> <span class="selector-tag">no</span> <span class="selector-tag">more</span> <span class="selector-tag">unsorted</span> <span class="selector-tag">records</span>:</span><br><span class="line">        <span class="selector-tag">Read</span> <span class="selector-tag">k</span> <span class="selector-tag">records</span> <span class="selector-tag">from</span> <span class="selector-tag">the</span> <span class="selector-tag">temporary</span> <span class="selector-tag">file</span></span><br><span class="line">        <span class="selector-tag">Sort</span> <span class="selector-tag">records</span> <span class="selector-tag">by</span> <span class="selector-tag">t</span> (term number) </span><br><span class="line">        <span class="selector-tag">and</span> <span class="selector-tag">for</span> <span class="selector-tag">equal</span> <span class="selector-tag">values</span> <span class="selector-tag">of</span> <span class="selector-tag">t</span>, <span class="selector-tag">by</span> <span class="selector-tag">d</span> (document ID)</span><br><span class="line">        <span class="selector-tag">Write</span> <span class="selector-tag">the</span> <span class="selector-tag">sorted</span> <span class="selector-tag">run</span> <span class="selector-tag">back</span> <span class="selector-tag">to</span> <span class="selector-tag">the</span> <span class="selector-tag">temporary</span> <span class="selector-tag">file</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Merging</span></span><br><span class="line">    <span class="selector-tag">Repeat</span> <span class="selector-tag">pairwise</span> <span class="selector-tag">merging</span> <span class="selector-tag">of</span> <span class="selector-tag">runs</span> <span class="selector-tag">in</span> <span class="selector-tag">the</span> <span class="selector-tag">temporary</span> <span class="selector-tag">file</span> </span><br><span class="line">    <span class="selector-tag">until</span> <span class="selector-tag">only</span> <span class="selector-tag">one</span> <span class="selector-tag">sorted</span> <span class="selector-tag">run</span> <span class="selector-tag">remains</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Output inverted file</span></span><br><span class="line">    <span class="selector-tag">For</span> <span class="selector-tag">each</span> <span class="selector-tag">term</span> <span class="selector-tag">t</span> <span class="selector-tag">in</span> <span class="selector-tag">S</span>:</span><br><span class="line">        <span class="selector-tag">Start</span> <span class="selector-tag">a</span> <span class="selector-tag">new</span> <span class="selector-tag">inverted</span> <span class="selector-tag">file</span> <span class="selector-tag">entry</span></span><br><span class="line">        <span class="selector-tag">Read</span> <span class="keyword">all</span> <span class="selector-tag">triples</span> (t, d, f) <span class="selector-tag">from</span> <span class="selector-tag">the</span> <span class="selector-tag">temporary</span> <span class="selector-tag">file</span> <span class="selector-tag">for</span> <span class="selector-tag">term</span> <span class="selector-tag">t</span></span><br><span class="line">        <span class="selector-tag">Append</span> <span class="selector-tag">these</span> <span class="selector-tag">triples</span> <span class="selector-tag">to</span> <span class="selector-tag">the</span> <span class="selector-tag">inverted</span> <span class="selector-tag">file</span> <span class="selector-tag">entry</span></span><br><span class="line">        <span class="selector-tag">If</span> <span class="selector-tag">required</span>, <span class="selector-tag">compress</span> <span class="selector-tag">the</span> <span class="selector-tag">inverted</span> <span class="selector-tag">file</span> <span class="selector-tag">entry</span></span><br><span class="line">        <span class="selector-tag">Write</span> <span class="selector-tag">the</span> <span class="selector-tag">entry</span> <span class="selector-tag">to</span> <span class="selector-tag">the</span> <span class="selector-tag">final</span> <span class="selector-tag">inverted</span> <span class="selector-tag">file</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="Memory-Usage-and-Total-Time"><a href="#Memory-Usage-and-Total-Time" class="headerlink" title="Memory Usage and Total Time"></a>Memory Usage and Total Time</h2><p>On huge data we have the result:</p>
+<table>
+<thead>
+<tr>
+<th>\</th>
+<th>Memory Usege/MB</th>
+<th>Total Time/s</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Memory Based( Map)</td>
+<td>1720.4</td>
+<td>256</td>
+</tr>
+<tr>
+<td>Memory Based (B+)</td>
+<td>1744.4</td>
+<td>376</td>
+</tr>
+<tr>
+<td>Sort Based</td>
+<td>34.8</td>
+<td>510</td>
+</tr>
+</tbody></table>
+<p>we can see that Sort Based use far less memory than Memory Based, and Memory Based is a little faster that Sort Based.</p>
+<p>The reason why B+ implemented Memory Based is worse than map implemented Memory Based is that the implementation of B+ tree is bad. </p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="https://github.com/AKonjac0/AKonjac0.github.io">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Inverted-File-Index"><span class="toc-number">1.</span> <span class="toc-text">Inverted File Index</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Inverted-File-Index-Creation"><span class="toc-number">1.1.</span> <span class="toc-text">Inverted File Index Creation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Memory-Based"><span class="toc-number">1.1.1.</span> <span class="toc-text">Memory Based</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Sort-Based"><span class="toc-number">1.1.2.</span> <span class="toc-text">Sort Based</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Memory-Usage-and-Total-Time"><span class="toc-number">1.2.</span> <span class="toc-text">Memory Usage and Total Time</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://akonjac0.github.io/2024/11/02/IFI/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://akonjac0.github.io/2024/11/02/IFI/&text=IFI"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://akonjac0.github.io/2024/11/02/IFI/&title=IFI"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://akonjac0.github.io/2024/11/02/IFI/&is_video=false&description=IFI"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=IFI&body=Check out this article: http://akonjac0.github.io/2024/11/02/IFI/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://akonjac0.github.io/2024/11/02/IFI/&title=IFI"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://akonjac0.github.io/2024/11/02/IFI/&title=IFI"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://akonjac0.github.io/2024/11/02/IFI/&title=IFI"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://akonjac0.github.io/2024/11/02/IFI/&title=IFI"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://akonjac0.github.io/2024/11/02/IFI/&name=IFI&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://akonjac0.github.io/2024/11/02/IFI/&t=IFI"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2024-2077
+    AKonjac_
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/AKonjac0/AKonjac0.github.io">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
