@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Pairing HeapOperationsFind-Min直接返回根节点 Meld合并两个堆 把两个堆中权值小的根节点  作为根节点，把另一个根节点  作为儿子插入到这个节点 由于配对堆需要维护一个精巧的顺序，所以对一个节点，左边的儿子是最新加入的，右边是最早加入的 所以  插入到当前根节点  的儿子，把之前的儿子设为  兄弟即可 12345678910template&lt;typename">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pairing Heap">
+<meta property="og:url" content="http://akonjac0.github.io/2024/12/10/pairing%20heap/index.html">
+<meta property="og:site_name" content="My blog">
+<meta property="og:description" content="Pairing HeapOperationsFind-Min直接返回根节点 Meld合并两个堆 把两个堆中权值小的根节点  作为根节点，把另一个根节点  作为儿子插入到这个节点 由于配对堆需要维护一个精巧的顺序，所以对一个节点，左边的儿子是最新加入的，右边是最早加入的 所以  插入到当前根节点  的儿子，把之前的儿子设为  兄弟即可 12345678910template&lt;typename">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-12-10T12:23:08.736Z">
+<meta property="article:modified_time" content="2024-12-10T13:22:43.405Z">
+<meta property="article:author" content="AKonjac_">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Pairing Heap</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/AKonjac0/AKonjac0.github.io">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2024/12/10/Particle%20Swarm%20Optimization/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2024/12/10/Mersenne%20twister/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://akonjac0.github.io/2024/12/10/pairing%20heap/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://akonjac0.github.io/2024/12/10/pairing%20heap/&text=Pairing Heap"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://akonjac0.github.io/2024/12/10/pairing%20heap/&title=Pairing Heap"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://akonjac0.github.io/2024/12/10/pairing%20heap/&is_video=false&description=Pairing Heap"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Pairing Heap&body=Check out this article: http://akonjac0.github.io/2024/12/10/pairing%20heap/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://akonjac0.github.io/2024/12/10/pairing%20heap/&title=Pairing Heap"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://akonjac0.github.io/2024/12/10/pairing%20heap/&title=Pairing Heap"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://akonjac0.github.io/2024/12/10/pairing%20heap/&title=Pairing Heap"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://akonjac0.github.io/2024/12/10/pairing%20heap/&title=Pairing Heap"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://akonjac0.github.io/2024/12/10/pairing%20heap/&name=Pairing Heap&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://akonjac0.github.io/2024/12/10/pairing%20heap/&t=Pairing Heap"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Pairing-Heap"><span class="toc-number">1.</span> <span class="toc-text">Pairing Heap</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Operations"><span class="toc-number">1.1.</span> <span class="toc-text">Operations</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Find-Min"><span class="toc-number">1.1.1.</span> <span class="toc-text">Find-Min</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Meld"><span class="toc-number">1.1.2.</span> <span class="toc-text">Meld</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#insert"><span class="toc-number">1.1.3.</span> <span class="toc-text">insert</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Merge"><span class="toc-number">1.1.4.</span> <span class="toc-text">Merge</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Delete-Min"><span class="toc-number">1.1.5.</span> <span class="toc-text">Delete-Min</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Decrease-Key"><span class="toc-number">1.1.6.</span> <span class="toc-text">Decrease-Key</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Code"><span class="toc-number">1.2.</span> <span class="toc-text">Code</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%8D%E6%9D%82%E5%BA%A6%E8%AF%81%E6%98%8E"><span class="toc-number">1.3.</span> <span class="toc-text">复杂度证明</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        Pairing Heap
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">AKonjac_</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-12-10T12:23:08.736Z" class="dt-published" itemprop="datePublished">2024-12-10</time>
+        
+        (Updated: <time datetime="2024-12-10T13:22:43.405Z" class="dt-updated" itemprop="dateModified">2024-12-10</time>)
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="Pairing-Heap"><a href="#Pairing-Heap" class="headerlink" title="Pairing Heap"></a>Pairing Heap</h1><h2 id="Operations"><a href="#Operations" class="headerlink" title="Operations"></a>Operations</h2><h3 id="Find-Min"><a href="#Find-Min" class="headerlink" title="Find-Min"></a>Find-Min</h3><p>直接返回根节点</p>
+<h3 id="Meld"><a href="#Meld" class="headerlink" title="Meld"></a>Meld</h3><p>合并两个堆</p>
+<p>把两个堆中权值小的根节点 <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.294ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 572 453"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"></path></g></g></g></svg></mjx-container> 作为根节点，把另一个根节点 <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.464ex;" xmlns="http://www.w3.org/2000/svg" width="1.109ex" height="1.464ex" role="img" focusable="false" viewBox="0 -442 490 647"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D466" d="M21 287Q21 301 36 335T84 406T158 442Q199 442 224 419T250 355Q248 336 247 334Q247 331 231 288T198 191T182 105Q182 62 196 45T238 27Q261 27 281 38T312 61T339 94Q339 95 344 114T358 173T377 247Q415 397 419 404Q432 431 462 431Q475 431 483 424T494 412T496 403Q496 390 447 193T391 -23Q363 -106 294 -155T156 -205Q111 -205 77 -183T43 -117Q43 -95 50 -80T69 -58T89 -48T106 -45Q150 -45 150 -87Q150 -107 138 -122T115 -142T102 -147L99 -148Q101 -153 118 -160T152 -167H160Q177 -167 186 -165Q219 -156 247 -127T290 -65T313 -9T321 21L315 17Q309 13 296 6T270 -6Q250 -11 231 -11Q185 -11 150 11T104 82Q103 89 103 113Q103 170 138 262T173 379Q173 380 173 381Q173 390 173 393T169 400T158 404H154Q131 404 112 385T82 344T65 302T57 280Q55 278 41 278H27Q21 284 21 287Z"></path></g></g></g></svg></mjx-container> 作为儿子插入到这个节点</p>
+<p>由于配对堆需要维护一个精巧的顺序，所以对一个节点，左边的儿子是最新加入的，右边是最早加入的</p>
+<p>所以 <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.464ex;" xmlns="http://www.w3.org/2000/svg" width="1.109ex" height="1.464ex" role="img" focusable="false" viewBox="0 -442 490 647"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D466" d="M21 287Q21 301 36 335T84 406T158 442Q199 442 224 419T250 355Q248 336 247 334Q247 331 231 288T198 191T182 105Q182 62 196 45T238 27Q261 27 281 38T312 61T339 94Q339 95 344 114T358 173T377 247Q415 397 419 404Q432 431 462 431Q475 431 483 424T494 412T496 403Q496 390 447 193T391 -23Q363 -106 294 -155T156 -205Q111 -205 77 -183T43 -117Q43 -95 50 -80T69 -58T89 -48T106 -45Q150 -45 150 -87Q150 -107 138 -122T115 -142T102 -147L99 -148Q101 -153 118 -160T152 -167H160Q177 -167 186 -165Q219 -156 247 -127T290 -65T313 -9T321 21L315 17Q309 13 296 6T270 -6Q250 -11 231 -11Q185 -11 150 11T104 82Q103 89 103 113Q103 170 138 262T173 379Q173 380 173 381Q173 390 173 393T169 400T158 404H154Q131 404 112 385T82 344T65 302T57 280Q55 278 41 278H27Q21 284 21 287Z"></path></g></g></g></svg></mjx-container> 插入到当前根节点 <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.294ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 572 453"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"></path></g></g></g></svg></mjx-container> 的儿子，把之前的儿子设为 <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.464ex;" xmlns="http://www.w3.org/2000/svg" width="1.109ex" height="1.464ex" role="img" focusable="false" viewBox="0 -442 490 647"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D466" d="M21 287Q21 301 36 335T84 406T158 442Q199 442 224 419T250 355Q248 336 247 334Q247 331 231 288T198 191T182 105Q182 62 196 45T238 27Q261 27 281 38T312 61T339 94Q339 95 344 114T358 173T377 247Q415 397 419 404Q432 431 462 431Q475 431 483 424T494 412T496 403Q496 390 447 193T391 -23Q363 -106 294 -155T156 -205Q111 -205 77 -183T43 -117Q43 -95 50 -80T69 -58T89 -48T106 -45Q150 -45 150 -87Q150 -107 138 -122T115 -142T102 -147L99 -148Q101 -153 118 -160T152 -167H160Q177 -167 186 -165Q219 -156 247 -127T290 -65T313 -9T321 21L315 17Q309 13 296 6T270 -6Q250 -11 231 -11Q185 -11 150 11T104 82Q103 89 103 113Q103 170 138 262T173 379Q173 380 173 381Q173 390 173 393T169 400T158 404H154Q131 404 112 385T82 344T65 302T57 280Q55 278 41 278H27Q21 284 21 287Z"></path></g></g></g></svg></mjx-container> 兄弟即可</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; Node&lt;T&gt;* <span class="title">meld</span><span class="params">(Node&lt;T&gt;* x, Node&lt;T&gt;* y)</span></span>{</span><br><span class="line">    <span class="keyword">if</span>(!x) <span class="keyword">return</span> y;</span><br><span class="line">    <span class="keyword">if</span>(!y) <span class="keyword">return</span> x;</span><br><span class="line">    <span class="keyword">if</span>(x-&gt;value &gt; y-&gt;value) <span class="built_in">swap</span>(x, y);</span><br><span class="line">    y-&gt;sibling = x-&gt;child;</span><br><span class="line">    <span class="keyword">if</span>(x-&gt;child) x-&gt;child-&gt;father = y;</span><br><span class="line">    x-&gt;child = y;</span><br><span class="line">    y-&gt;father = x;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+
+<h3 id="insert"><a href="#insert" class="headerlink" title="insert"></a>insert</h3><p>将新节点与原有堆合并</p>
+<h3 id="Merge"><a href="#Merge" class="headerlink" title="Merge"></a>Merge</h3><p>这个函数将节点 <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.294ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 572 453"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"></path></g></g></g></svg></mjx-container> 及其右边的兄弟合并成一个堆</p>
+<p>我们希望先将两个堆两两配对合并成一个新的堆，再从右到左合并这些堆</p>
+<p>递归地说，就是将当前两个堆合并，然后递归两个堆右边的所有堆，最后将合并的堆与递归的堆合并</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Node&lt;T&gt;* <span class="title">merge</span><span class="params">(Node&lt;T&gt;* x)</span></span>{</span><br><span class="line">    <span class="keyword">if</span>(!x) <span class="keyword">return</span> x;</span><br><span class="line">    x-&gt;father = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">if</span>(!x-&gt;sibling) <span class="keyword">return</span> x;</span><br><span class="line">    Node&lt;T&gt;* y = x-&gt;sibling;</span><br><span class="line">    Node&lt;T&gt;* c = y-&gt;sibling;</span><br><span class="line">    y-&gt;father = <span class="literal">NULL</span>;</span><br><span class="line">    y-&gt;sibling = x-&gt;sibling = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">meld</span>(<span class="built_in">merge</span>(c), <span class="built_in">meld</span>(x, y));</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+
+<h3 id="Delete-Min"><a href="#Delete-Min" class="headerlink" title="Delete-Min"></a>Delete-Min</h3><p>将根节点删除，并将根的儿子进行 <code>merge</code>, 将得到的返回指针作为新的根</p>
+<h3 id="Decrease-Key"><a href="#Decrease-Key" class="headerlink" title="Decrease-Key"></a>Decrease-Key</h3><p>将节点 <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.294ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 572 453"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"></path></g></g></g></svg></mjx-container> 权值减小</p>
+<p>由于权值减小不影响 <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.294ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 572 453"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"></path></g></g></g></svg></mjx-container> 的儿子与它的顺序，所以不用改 <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.294ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 572 453"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"></path></g></g></g></svg></mjx-container> 的儿子</p>
+<p>只需要将 <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.294ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 572 453"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"></path></g></g></g></svg></mjx-container> 从它那一层抽出来，维护原有对结构，并将 <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.294ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 572 453"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"></path></g></g></g></svg></mjx-container> 与原有的堆合并即可</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function">Node&lt;T&gt;* <span class="title">decrease_key</span><span class="params">(Node&lt;T&gt;* x, T value)</span></span>{</span><br><span class="line">    x-&gt;value = value;</span><br><span class="line">    <span class="keyword">if</span>(x == root) <span class="keyword">return</span> x;</span><br><span class="line">    <span class="keyword">if</span>(x-&gt;father-&gt;child == x) x-&gt;father-&gt;child = x-&gt;sibling;</span><br><span class="line">    <span class="keyword">else</span> x-&gt;father-&gt;sibling = x-&gt;sibling;</span><br><span class="line">    <span class="keyword">if</span>(x-&gt;sibling) x-&gt;sibling-&gt;father = x-&gt;father;</span><br><span class="line">    x-&gt;sibling = x-&gt;father = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="comment">// because value decreases, so x-&gt;child doesn't need to be modified</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">meld</span>(root, x);</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+
+<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Pairing_Heap</span>;</span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Node</span>{</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    T value;</span><br><span class="line">    Node&lt;T&gt;* child;</span><br><span class="line">    Node&lt;T&gt;* sibling;</span><br><span class="line">    Node&lt;T&gt;* father;</span><br><span class="line">    <span class="built_in">Node</span>&lt;T&gt;(){}</span><br><span class="line">    <span class="built_in">Node</span>&lt;T&gt;(T value) : <span class="built_in">value</span>(value){child = <span class="literal">NULL</span>, sibling = <span class="literal">NULL</span>, father = <span class="literal">NULL</span>;}</span><br><span class="line">    <span class="keyword">friend</span> <span class="keyword">class</span> <span class="title class_">Pairing_Heap</span>&lt;T&gt;;</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Pairing_Heap</span>{</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Node&lt;T&gt;* root;</span><br><span class="line">    <span class="built_in">Pairing_Heap</span>&lt;T&gt;(){root = <span class="literal">NULL</span>;}</span><br><span class="line">    <span class="function">Node&lt;T&gt;* <span class="title">meld</span><span class="params">(Node&lt;T&gt;* x, Node&lt;T&gt;* y)</span></span>{</span><br><span class="line">        <span class="keyword">if</span>(!x) <span class="keyword">return</span> y;</span><br><span class="line">        <span class="keyword">if</span>(!y) <span class="keyword">return</span> x;</span><br><span class="line">        <span class="keyword">if</span>(x-&gt;value &gt; y-&gt;value) <span class="built_in">swap</span>(x, y);</span><br><span class="line">        y-&gt;sibling = x-&gt;child;</span><br><span class="line">        <span class="keyword">if</span>(x-&gt;child) x-&gt;child-&gt;father = y;</span><br><span class="line">        x-&gt;child = y;</span><br><span class="line">        y-&gt;father = x;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    }</span><br><span class="line">    <span class="function">Node&lt;T&gt;* <span class="title">merge</span><span class="params">(Node&lt;T&gt;* x)</span></span>{</span><br><span class="line">        <span class="keyword">if</span>(!x) <span class="keyword">return</span> x;</span><br><span class="line">        x-&gt;father = <span class="literal">NULL</span>;</span><br><span class="line">        <span class="keyword">if</span>(!x-&gt;sibling) <span class="keyword">return</span> x;</span><br><span class="line">        Node&lt;T&gt;* y = x-&gt;sibling;</span><br><span class="line">        Node&lt;T&gt;* c = y-&gt;sibling;</span><br><span class="line">        y-&gt;father = <span class="literal">NULL</span>;</span><br><span class="line">        y-&gt;sibling = x-&gt;sibling = <span class="literal">NULL</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">meld</span>(<span class="built_in">merge</span>(c), <span class="built_in">meld</span>(x, y));</span><br><span class="line">    }</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">insert</span><span class="params">(T value)</span></span>{</span><br><span class="line">        Node&lt;T&gt;* NewNode = <span class="keyword">new</span> <span class="built_in">Node</span>&lt;T&gt;(value);</span><br><span class="line">        root = <span class="built_in">meld</span>(NewNode, root);    </span><br><span class="line">    }</span><br><span class="line">    <span class="function">T <span class="title">find_min</span><span class="params">()</span></span>{</span><br><span class="line">        <span class="keyword">return</span> root-&gt;value;</span><br><span class="line">    }</span><br><span class="line">    <span class="function">Node&lt;T&gt;* <span class="title">erase_min</span><span class="params">(Node&lt;T&gt;* x)</span></span>{</span><br><span class="line">        Node&lt;T&gt;* t = <span class="built_in">merge</span>(x-&gt;child);</span><br><span class="line">        <span class="keyword">delete</span> x;</span><br><span class="line">        <span class="keyword">return</span> t;</span><br><span class="line">    }</span><br><span class="line">    <span class="function">T <span class="title">delete_min</span><span class="params">()</span></span>{</span><br><span class="line">        T ret = root-&gt;value;</span><br><span class="line">        root = <span class="built_in">erase_min</span>(root);</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    }</span><br><span class="line">    <span class="function">Node&lt;T&gt;* <span class="title">decrease_key</span><span class="params">(Node&lt;T&gt;* x, T value)</span></span>{</span><br><span class="line">        x-&gt;value = value;</span><br><span class="line">        <span class="keyword">if</span>(x == root) <span class="keyword">return</span> x;</span><br><span class="line">        <span class="keyword">if</span>(x-&gt;father-&gt;child == x) x-&gt;father-&gt;child = x-&gt;sibling;</span><br><span class="line">        <span class="keyword">else</span> x-&gt;father-&gt;sibling = x-&gt;sibling;</span><br><span class="line">        <span class="keyword">if</span>(x-&gt;sibling) x-&gt;sibling-&gt;father = x-&gt;father;</span><br><span class="line">        x-&gt;sibling = x-&gt;father = <span class="literal">NULL</span>;</span><br><span class="line">        <span class="comment">// because value decreases, so x-&gt;child doesn't need to be modified</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">meld</span>(root, x);</span><br><span class="line">    }</span><br><span class="line">};</span><br></pre></td></tr></table></figure>
+
+<h2 id="复杂度证明"><a href="#复杂度证明" class="headerlink" title="复杂度证明"></a>复杂度证明</h2>
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="https://github.com/AKonjac0/AKonjac0.github.io">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Pairing-Heap"><span class="toc-number">1.</span> <span class="toc-text">Pairing Heap</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Operations"><span class="toc-number">1.1.</span> <span class="toc-text">Operations</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Find-Min"><span class="toc-number">1.1.1.</span> <span class="toc-text">Find-Min</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Meld"><span class="toc-number">1.1.2.</span> <span class="toc-text">Meld</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#insert"><span class="toc-number">1.1.3.</span> <span class="toc-text">insert</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Merge"><span class="toc-number">1.1.4.</span> <span class="toc-text">Merge</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Delete-Min"><span class="toc-number">1.1.5.</span> <span class="toc-text">Delete-Min</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Decrease-Key"><span class="toc-number">1.1.6.</span> <span class="toc-text">Decrease-Key</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Code"><span class="toc-number">1.2.</span> <span class="toc-text">Code</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%8D%E6%9D%82%E5%BA%A6%E8%AF%81%E6%98%8E"><span class="toc-number">1.3.</span> <span class="toc-text">复杂度证明</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://akonjac0.github.io/2024/12/10/pairing%20heap/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://akonjac0.github.io/2024/12/10/pairing%20heap/&text=Pairing Heap"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://akonjac0.github.io/2024/12/10/pairing%20heap/&title=Pairing Heap"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://akonjac0.github.io/2024/12/10/pairing%20heap/&is_video=false&description=Pairing Heap"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Pairing Heap&body=Check out this article: http://akonjac0.github.io/2024/12/10/pairing%20heap/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://akonjac0.github.io/2024/12/10/pairing%20heap/&title=Pairing Heap"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://akonjac0.github.io/2024/12/10/pairing%20heap/&title=Pairing Heap"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://akonjac0.github.io/2024/12/10/pairing%20heap/&title=Pairing Heap"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://akonjac0.github.io/2024/12/10/pairing%20heap/&title=Pairing Heap"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://akonjac0.github.io/2024/12/10/pairing%20heap/&name=Pairing Heap&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://akonjac0.github.io/2024/12/10/pairing%20heap/&t=Pairing Heap"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2024-2077
+    AKonjac_
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/AKonjac0/AKonjac0.github.io">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
